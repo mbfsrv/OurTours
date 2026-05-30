@@ -1,0 +1,27 @@
+name: Deploy web-server via FTP
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "*" ]
+    paths:
+    - 'web/**'
+
+jobs:
+  deploy-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Upload Web to FTP Server
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: "./web/"
+          server-dir: "/public_html/made-by-free.com/tour/"
+          exclude: |
+            config.php
+            tour.sql
